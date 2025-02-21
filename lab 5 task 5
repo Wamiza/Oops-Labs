@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class ValidateString {
+    private:
+        string s;
+    public:
+        ValidateString(string str) : s(str) { }
+
+        bool isValid() const {
+            for (char c : s) {
+    
+                if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+};
+
+int main() {
+  
+    ValidateString v1("HelloWorld");
+    ValidateString v2("Hello World!"); 
+    ValidateString v3("Test123");      
+    
+    cout << "v1: " << (v1.isValid() ? "Valid" : "Invalid") << endl;
+    cout << "v2: " << (v2.isValid() ? "Valid" : "Invalid") << endl;
+    cout << "v3: " << (v3.isValid() ? "Valid" : "Invalid") << endl;
+    
+    return 0;
+}
