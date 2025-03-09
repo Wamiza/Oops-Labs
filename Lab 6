@@ -1,0 +1,299 @@
+Task 1:
+
+#include <iostream>
+using namespace std;
+
+class Book {
+	public:
+		string title;
+		string author;
+		string publisher;
+		
+	Book(string t, string a, string p) {
+		title = t;
+        author = a;
+        publisher = p;
+		cout<<"Hey, look at me! I exist!"<<endl;
+	}
+	
+	void display() {
+        cout << "Title: " << title << endl << "Author: " << author << endl << "Publisher: " << publisher << endl;
+    }
+};
+
+class FictionBook : public Book {
+	public:
+	    string genre;
+	    string protagonist;
+	
+	FictionBook(string t, string a, string p, string g, string pro) : Book(t, a, p) {
+		genre = g;
+        protagonist = pro;
+		cout<<"Here is your Fiction Book!"<<endl;
+	}
+	
+	void display() {
+        Book::display();
+        cout << "Genre: " << genre << endl << "Protagonist: " << protagonist << endl;
+    }
+};
+
+int main() {
+	FictionBook fb("TREASURE ISLAND","Robert louis stevenson","Cassell & Comapny","Adventure","Jim Hawkins");
+	fb.display();
+	return 0;
+}
+
+Task 2 :
+
+#include <iostream>
+using namespace std;
+
+class Character{
+	public: 
+	    int health;
+	    int damage;
+	
+	Character(int h, int d){
+		health = h;
+		damage = d;
+		cout<<"Let's Dive into the World of Games!"<<endl;
+	}
+	
+	void display() {
+		cout<<"Health : "<<health<<endl<<"Damage : "<<damage<<endl;
+	}
+};
+
+class Enemy: public Character{
+	public:
+	
+	Enemy(int h, int d) : Character(h,d){
+		cout<<"Hi, I'm Your Enemy!"<<endl;
+	}
+	
+	void display() {
+		Character::display();
+	}
+};
+
+class Player : public Character{
+	public :
+		
+	Player(int h, int d) : Character(h,d) {
+		cout<<"Hi, Let's Save The World!"<<endl;
+	}
+	
+	void display() {
+		Character::display();
+	}
+};
+
+class Wizard : public Player {
+public:
+    int magicPower;
+    string spell;
+
+    Wizard(int h, int d, int m, string s) : Player(h, d) {
+        magicPower = m;
+        spell = s;
+        cout << "A Wizard is Born with Arcane Powers!" << endl;
+    }
+
+    void display() {
+        Player::display();
+        cout << "Magic Power: " << magicPower << endl << "Spell: " << spell << endl;
+    }
+};
+
+int main() {
+	Enemy e(100, 0);
+	e.display();
+	Player p(120, 20);
+	p.display();
+	Wizard w(200, 100,130,"Fire Ball");
+	w.display();
+	return 0;
+}
+
+Task 3 :
+
+#include <iostream>
+using namespace std;
+
+class Position{
+	public:
+		double x, y , z;
+		
+	Position(double X, double Y, double Z){
+		x=X;
+		y=Y;
+		z=Z;
+	}
+	
+	void display(){
+		cout<<"Position:  "<<x<<", "<<y<<", "<<z<<endl;
+	}
+};
+
+class Health{
+	public:
+		int health;
+		
+	Health(int h){
+		health = h;
+	}
+	
+	void display(){
+		cout<<"Health : "<<health<<endl;
+	}
+};
+
+class Character : public Position, public Health {
+	public:
+	    string specialAbilities;
+		string action;
+		
+	Character(double X, double Y, double Z, int h, string s, string a) : Position(X,Y,Z) , Health(h) {
+		specialAbilities = s;
+		action = a;
+	} 
+	
+	void cdisplay(){
+		Position::display(); Health::display();
+		cout<<"Special Abilities : "<<specialAbilities<<endl<<"Action : "<<action<<endl;
+	} 	
+};
+
+int main() {
+	Character c(1.4,2.1,3.0,100,"Fast Running", "Fireball");
+	c.cdisplay();
+	return 0;
+}
+
+Task 4 :
+
+#include <iostream>
+using namespace std;
+
+class Person{
+	public:
+		string name;
+		int age;
+		
+	Person(string n, int a){
+			name = n;
+			age = a;
+	}
+	
+	void display(){
+		cout<<"Name : "<<name<<endl<<"Age : "<<age<<endl;
+	}
+};
+
+class Student: public Person{
+	public:
+		int rollNo;
+	    double gradeLevel;
+		
+	Student(string n, int a, int r, double g) : Person(n,a){
+		rollNo = r;
+		gradeLevel = g;
+	}
+	
+	void Sdisplay(){
+		Person::display();
+		cout<<"Roll NO : "<<rollNo<<endl<<"Grade Level : "<<gradeLevel<<endl;
+	}	
+};
+
+class Teacher : public Person{
+	public:
+		string subject;
+		int roomNo;
+		
+	Teacher(string n, int a, string s, int r) : Person(n,a){
+	    subject = s;
+		roomNo = r;	
+	}
+	
+	void Tdisplay(){
+		Person::display();
+		cout<<"Subject : "<<subject<<endl<<"Room NO :"<<roomNo<<endl;
+	}
+};
+
+class GraduateStudent: public Student, public Teacher{
+	public:
+		
+	GraduateStudent(string n, int a, int r, double g, string s, int rn) : Student(n, a, r, g), Teacher(n, a, s, rn) {}
+    
+	void GSdisplay(){
+		Student::Sdisplay(); Teacher::Tdisplay();
+		}
+};
+
+int main(){
+	GraduateStudent GS("Ali", 24,2437,3.5,"OOP",13);
+	GS.GSdisplay();
+	return 0;
+}
+
+Task 5 :
+
+#include <iostream>
+using namespace std;
+
+class Vehicle{
+	public:
+		string make;
+		string model;
+		int year;
+	
+	Vehicle(string m, string mod, int y){
+		make =m;
+		model = mod;
+		year = y;
+	}
+	
+	void display(){
+	    cout<<"Make : "<<make<<endl<<"Model : "<<model<<endl<<"Year : "<<year<<endl;
+	}
+};
+
+class Car : public Vehicle{
+	public: 
+	   int doors;
+	   int fuelEfficiency;
+	   
+	Car(string m, string mod, int y, int d, int fE) : Vehicle(m,mod,y){
+		doors = d;
+		fuelEfficiency = fE;
+	}
+	
+	void cdisplay(){
+	    Vehicle::display();
+	    cout<<"Doors : "<<doors<<endl<<"Fuel Efficiency : "<<fuelEfficiency<<endl;
+	}
+};
+
+class ElectricCar : public Car{
+	public:
+		int batteryLife;
+		
+	ElectricCar(string m, string mod, int y, int d , int fE, int b) : Car(m,mod,y,d,fE){
+	    batteryLife = b;
+	}
+	
+	void display() {
+		Car::cdisplay();
+		cout<<"Battery Life : "<<batteryLife<<endl;
+	}
+};
+
+int main(){
+	ElectricCar ec("Honda","Civic", 2018, 4, 16 , 90 );
+	ec.display();
+	
+	return 0;
+}
