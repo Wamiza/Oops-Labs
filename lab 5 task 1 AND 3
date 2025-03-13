@@ -1,0 +1,198 @@
+#include <iostream>
+using namespace std;
+
+class DayOfYear {
+    public:
+        int dayOfYear;   
+        int month;      
+        int dayInMonth;  
+
+        static const string monthNames[12];
+        static const int monthDays[12];
+    
+        DayOfYear(int dayInput) {
+            dayOfYear = dayInput;
+            int remainingDays = dayInput;
+            month = 0;
+            
+            if(dayInput < 1 || dayInput > 366) {
+                month = -1;
+                dayInMonth = -1;
+                return;
+            }
+
+            if(dayInput == 366) {
+                month = 1;        
+                dayInMonth = 29;
+                return;
+            }
+            
+            for(int i = 0; i < 12; i++){
+                if(remainingDays <= monthDays[i]){
+                    month = i;
+                    dayInMonth = remainingDays;
+                    break;
+                } else {
+                    remainingDays -= monthDays[i];
+                }
+            }
+        }
+        
+       
+        void print(){
+         
+            if(month == -1) {
+                cout << "Invalid day of year!" << endl;
+                return;
+            }
+            cout << "Date: " << monthNames[month] << " " << dayInMonth << endl;
+        }
+};
+
+
+const string DayOfYear::monthNames[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+const int DayOfYear::monthDays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+int main() {
+    int day;
+    cout << "Enter the day of the year " << endl;
+    cin >> day;
+    
+    DayOfYear dy(day);
+    dy.print();
+    
+    return 0;
+}
+
+
+tASK 3
+
+#include <iostream>
+using namespace std;
+
+class MenuItem {
+public:
+    string name;
+    double price;
+
+    MenuItem() : name(""), price(0.0) {}
+    MenuItem(string n, double p) : name(n), price(p) {}
+};
+
+class Menu {
+public:
+    MenuItem items[100];
+    int itemCount;
+
+    Menu() : itemCount(0) {}
+
+    void addDish(string name, double price) {
+        if (itemCount < 100) {
+            items[itemCount] = MenuItem(name, price);
+            itemCount++;
+            cout << "Dish added successfully!" << endl;
+        } else {
+            cout << "Menu is full!" << endl;
+        }
+    }
+
+    void removeDish(int index) {
+        if (index >= 0 && index < itemCount) {
+            for (int i = index; i < itemCount - 1; i++) {
+                items[i] = items[i + 1];
+            }
+            itemCount--;
+            cout << "Dish removed successfully!" << endl;
+        } else {
+            cout << "Invalid index!" << endl;
+        }
+    }
+
+    void displayMenu() {
+        if (itemCount == 0) {
+            cout << "The menu is empty!" << endl;
+            return;
+        }
+        cout << "Menu:" << endl;
+        for (int i = 0; i < itemCount; i++) {
+            cout << i + 1 << ". " << items[i].name << " - Rs." << items[i].price << endl;
+        }
+    }
+
+    MenuItem getItem(int index) {
+        if (index >= 0 && index < itemCount) {
+            return items[index];
+        } else {
+            return MenuItem("Invalid", 0);
+        }
+    }
+
+    int getSize() {
+        return itemCount;
+    }
+};
+
+class Payment {
+public:
+    double amount;
+
+    Payment(double amt) : amount(amt) {}
+
+    void displayPayment() {
+        cout << "Total Amount to Pay: Rs." << amount << endl;
+    }
+};
+
+class Order {
+public:
+    MenuItem orderedItems[100];
+    int orderCount;
+    double totalPayment;
+
+    Order() : orderCount(0), totalPayment(0.0) {}
+
+    void placeOrder(Menu &menu) {
+        int choice;
+        char more;
+        do {
+            menu.displayMenu();
+            cout << "Enter the number of the dish you want to order: " << endl;
+            cin >> choice;
+            
+            if (choice > 0 && choice <= menu.getSize()) {
+                orderedItems[orderCount] = menu.getItem(choice - 1);
+                orderCount++;
+            } else {
+                cout << "Invalid choice!" << endl;
+            }
+            
+            cout << "Do you want to order more? (y/n): " << endl;
+            cin >> more;
+        } while ((more == 'y' || more == 'Y') && orderCount < 100);
+        
+        calculatePayment();
+    }
+
+    void calculatePayment() {
+        totalPayment = 0;
+        for (int i = 0; i < orderCount; i++) {
+            totalPayment += orderedItems[i].price;
+        }
+        Payment payment(totalPayment);
+        payment.displayPayment();
+    }
+};
+
+int main() {
+    Menu restaurantMenu;
+    Order customerOrder;
+
+    restaurantMenu.addDish("Burger", 599);
+    restaurantMenu.addDish("Pizza", 899);
+    restaurantMenu.addDish("Pasta", 749);
+    restaurantMenu.addDish("Salad", 499);
+
+    customerOrder.placeOrder(restaurantMenu);
+    return 0;
+}
