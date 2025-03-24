@@ -1,0 +1,610 @@
+TASK 1:
+#include<iostream>
+using namespace std;
+
+class Account{
+protected:
+    int accountnumber;
+    float balance;
+    string accountholdername;
+    string accountype;
+public:
+    Account(int accnumb,float b,string name,string type): accountnumber(accnumb),balance(b),accountholdername(name),accountype(type){}
+
+    void depositAmount(double amount){ 
+        balance+=amount;
+        cout<<"Deposited: "<<amount<<endl<<"New Balance: "<<balance<<endl;
+    }
+    virtual void withdraw(double amount){
+        if(balance>amount){
+            balance=balance-amount;
+            cout<<"Withdrawn: "<<amount<<endl<<"New Balance: "<<balance<<endl;
+        } 
+		else {
+            cout<<"Insufficient Balance"<<endl; 
+			}
+    }
+    virtual void calculateinterest(){
+        int interest;
+        if(balance > 100 ){ 
+            interest=balance*0.15;
+        } 
+		else if (balance > 500 ){
+            interest=balance*0.3;
+        } 
+		else if(balance > 1000){
+            interest=balance*0.5;
+        }
+    }
+    
+    void getaccountinfo(){
+        cout<<"Account Number: "<<accountnumber<<endl<<"Acount Holder Name: "<<accountholdername<<endl<<"Balance: "<<balance<<endl<<"Account Type: "<<accountype<<endl;
+    }
+};
+
+class Savingsaccount:public Account{
+protected:
+    float interestrate;
+    float minimumbalance;
+public:
+    Savingsaccount(int accnumb,float b,string name,string type,float intrate,float minbal): Account(accnumb,b,name,type),interestrate(intrate),minimumbalance(minbal) {}
+
+    void calculateInterest(){
+        double interest = balance * interestrate;
+        balance += interest;
+        cout<<"Interest Added: "<<interest<<endl<<"New Balance: "<<balance<<endl;
+    }
+
+    void withdraw(double amount){
+        if ((balance - amount) < minimumbalance) {
+            cout<<"Withdrawal denied! Balance cannot go below minimum balance."<<endl;
+        } 
+		else {
+            Account::withdraw(amount);
+        }
+    }
+};
+
+class FixedDepasitAccount:public Account{
+protected:
+    int maturitydate;
+    float fixedinterestrate;
+public:
+    FixedDepasitAccount(int accnumb,float b,string name,string type,int mdate,float fir): Account(accnumb,b,name,type),maturitydate(mdate),fixedinterestrate(fir) {}
+    void calculateinterest(){
+        double interest = balance * fixedinterestrate;
+        cout<<"Fixed Deposit Interest: "<<interest<<endl<<"Maturity Date: "<<maturitydate<<endl;
+    }
+ 
+    void withdraw(double amount){
+        if(maturitydate>10){
+            if(balance>amount && amount < 1000){
+                balance=balance-amount;
+            } 
+			else {
+                 cout<<"Insufficient Balance"<<endl;
+				 }
+        } 
+		else {
+            cout<<"Withdrawal not allowed before maturity date!"<<endl;
+        }
+    }
+
+};
+
+class CheckingAccount:public Account{
+public:
+    CheckingAccount(int accnumb,float b,string name,string type):Account(accnumb,b,name,type){}
+    void calculateinterest(){
+        cout<<"Checking accounts do not earn interest."<<endl;
+    }
+  
+    void withdraw(double amount){
+        if(amount > balance) {
+            cout<<"Insufficient funds! Overdraft not allowed."<<endl;
+        } 
+		else if(amount > 1000) {
+            cout<<"Withdrawal limit exceeded! Maximum withdrawal is 1000."<<endl;
+        } 
+		else {
+            balance -= amount;
+            cout<<"Withdrawn: "<<amount<<endl<<"New Balance: "<<balance<<endl;
+        }
+    }
+};
+
+int main(){
+    int choice;
+    cout<<"----------------->BANKING SYSTEM<--------------"<<endl;
+    cout<<"For Savings Account:"<<endl;
+    Savingsaccount S(10001,20000,"Wamiza","Savings Account",0.13,100);
+    S.getaccountinfo();
+    S.depositAmount(1000);
+    S.withdraw(200);
+    S.calculateInterest();
+    
+    cout<<"\nFor Fixed Deposit Account:"<<endl;
+    FixedDepasitAccount F(10002,30000,"ABC","Fixed Deposit Account",5,0.15);
+    F.getaccountinfo();
+    F.depositAmount(10000);
+    F.withdraw(100);
+    F.calculateinterest();
+    
+    cout<<"\nFor Checking Account:"<<endl;
+    CheckingAccount C(10003,1000,"XYZ","Checking Account");
+    C.getaccountinfo();
+    C.depositAmount(1000);
+    C.withdraw(200000);
+    C.calculateinterest();
+    
+    return 0;
+}
+
+TASK 2:
+#include <iostream>
+#include<cmath>
+using namespace std;
+
+class Shape{
+	public:
+		double position, borderThickness;
+		string color;
+		
+	Shape(double p, string c, double bt){
+		position = p;
+		color = c;
+		borderThickness = bt;
+	}
+	
+	virtual void draw() {
+	}
+	
+	virtual double calculateArea() {
+	}
+	
+	virtual double calculatePerimeter() {
+	}
+};
+
+class Circle: public Shape{
+	public:
+		double  radius, center;
+		
+	Circle(double p, string c, double bt, double r, double cc) : Shape(p,c,bt){
+		radius = r;
+		center = cc;
+	}
+	
+	void draw(){
+		cout<<"Drawing Circle"<<endl;
+	}
+	
+	double calculateArea(){
+		return 3.141*radius*radius;
+	}
+	
+	double calculatePerimeter(){
+		return 2*3.141*radius;
+	}
+};
+
+class Rectangle : public Shape{
+	public :
+		double width, height, topLeftCornerPosition;
+		
+	Rectangle(double p, string c, double bt,double w, double h, double tcp) : Shape(p,c,bt){
+		width = w;
+		height = h;
+		topLeftCornerPosition = tcp;
+	}
+		
+	void draw(){
+		cout<<"Drawing Rectangle"<<endl;
+	}
+	
+	double calculateArea(){
+		return width*height;
+	}
+	
+	double calculatePerimeter() {
+		return 2*(width + height);
+	}
+};
+
+class Triangle : public Shape{
+	public:
+		double a,b,c;
+		
+	Triangle(double p, string c, double bt,double s1, double s2, double s3): Shape(p,c,bt){
+		a = s1;
+		b = s2;
+		c = s3;
+	}
+	
+	void draw(){
+		cout<<"Drawing Triangle"<<endl;
+	}
+	
+    double calculateArea() {
+    double s = (a + b + c) / 2;
+    return sqrt(s * (s - a) * (s - b) * (s - c));
+    }
+ 
+	double calculatePerimeter(){
+		return a + b + c;
+	}
+};
+
+class Polygon : public Shape{
+	public:
+		double sideLength;
+        int numSides;
+        
+    Polygon(double p, string c, double bt, double sl, int ns) : Shape(p,c,bt) {
+    	sideLength = sl;
+    	numSides = ns;
+	}
+	
+	void draw(){
+		cout<<"Drawing Polygon"<<endl;
+	}
+	
+	double calculateArea(){
+        return (numSides * sideLength * sideLength)/(4*(3.14159 / numSides));
+    }
+    
+    double calculatePerimeter(){
+    	return sideLength*numSides;
+	}
+};
+
+int main(){
+	Shape* s[] = {
+	new Circle(2,"Transparent" ,2.3 , 2, 3 ),
+	new Rectangle(2,"Transparent",2.1,2,2,2),
+	new Triangle(6,"Transparent",2.1, 8,4 ,4),
+	new Polygon(2,"Transparent",2.1,2,4)
+	};
+	
+	for(int i=0; i<4; i++) {
+        s[i]->draw();
+        cout<<"Area: "<<s[i]->calculateArea()<<"\n";
+        cout<<"Perimeter: "<<s[i]->calculatePerimeter()<<"\n\n";
+        delete s[i];
+    }
+	return 0;
+}
+
+TASK 3:
+#include <iostream>
+using namespace std;
+
+class Currency {
+public:
+    double amount, exchangeRate;
+    string currencyCode, currencySymbol;
+
+    Currency(double a, string cc, string cs, double er) : amount(a), currencyCode(cc), currencySymbol(cs), exchangeRate(er) {}
+
+    double convertToBase() {
+        return amount*exchangeRate;
+    }
+
+    double convertToTargetCurrency() {
+        return convertToBase()/exchangeRate;
+    }
+
+    void displayCurrency() {
+        cout<<currencySymbol<<" "<<amount<<" ("<<currencyCode <<")"<< endl;
+        cout<<"Base Amount: "<<convertToTargetCurrency()<<endl<<"Target Amount: "<<convertToBase()<<endl;
+    }
+};
+
+class Dollar : public Currency {
+public:
+    Dollar(double a) : Currency(a, "USD", "$", 1.0) {}
+    
+    double convertToBase() {
+        return amount*exchangeRate;
+    }
+
+    double convertToTargetCurrency() {
+        return convertToBase()/exchangeRate;
+    }
+
+    void displayCurrency() {
+        cout << currencySymbol << " " << amount << " (" << currencyCode << ")" << endl;
+        cout<<"Base Amount: "<<convertToTargetCurrency()<<endl<<"Target Amount: "<<convertToBase()<<endl;
+    }
+};
+
+class Euro : public Currency {
+public:
+    Euro(double a) : Currency(a, "EUR", "€", 1.1) {}
+    
+    double convertToBase() {
+        return amount*exchangeRate;
+    }
+
+    double convertToTargetCurrency() {
+        return convertToBase()/exchangeRate;
+    }
+
+    void displayCurrency() {
+        cout << currencySymbol << " " << amount << " (" << currencyCode << ")" << endl;
+        cout<<"Base Amount: "<<convertToTargetCurrency()<<endl<<"Target Amount: "<<convertToBase()<<endl;
+    }
+};
+
+class Rupee : public Currency {
+public:
+    Rupee(double a) : Currency(a, "PKR", "Rs", 0.012) {}
+    
+    double convertToBase() {
+        return amount*exchangeRate;
+    }
+
+    double convertToTargetCurrency() {
+        return convertToBase()/exchangeRate;
+    }
+
+    void displayCurrency() {
+        cout << currencySymbol << " " << amount << " (" << currencyCode << ")" << endl;
+        cout<<"Base Amount: "<<convertToTargetCurrency()<<endl<<"Target Amount: "<<convertToBase()<<endl;
+    }
+};
+
+int main() {
+    Dollar usd(300);
+    Euro eur(300);
+    Rupee inr(300);
+
+    cout << "Initial Values:\n";
+    usd.displayCurrency();
+    eur.displayCurrency();
+    inr.displayCurrency();
+
+    return 0;
+}
+
+TASK 4:
+#include <iostream>
+using namespace std;
+
+class Person {
+public:
+    string name, email;
+    int id, number;
+    
+    Person(string n, int iD, int nm, string em) {
+        name = n;
+        id = iD;
+        number = nm;
+        email = em;
+    }
+    
+    void displayInfo() {
+        cout<<"Name: "<<name<<endl<<"ID: "<<id<<endl<<"Email: "<<email<<endl<<"Number: "<<number<<endl;
+    }
+    
+    void updateInfo(string newName, int newId, int newNumber, string newEmail) {
+        name = newName;
+        id = newId;
+        number = newNumber;
+        email = newEmail;
+    }
+};
+
+class Student : public Person {
+public:
+    string coursesEnrolled[6];
+    float GPA;
+    int enrollmentYear;
+    
+    Student(string n, int iD, int nm, string em, string ce[], float gpa, int ey) : Person(n, iD, nm, em) {
+        for (int i = 0; i < 6; i++) {
+            coursesEnrolled[i] = ce[i];
+        }
+        GPA = gpa;
+        enrollmentYear = ey;
+    }
+    
+    void displayInfo() {
+        cout<<"Academic Records"<<endl;
+        Person::displayInfo();
+        cout<<"GPA: "<<GPA<<endl<<"Enrollment Year: "<<enrollmentYear<<endl<<"Courses Enrolled:"<<endl;
+        for (int i = 0; i < 6; i++) {
+            cout<<coursesEnrolled[i]<<endl;
+        }
+    }
+};
+
+class Professor : public Person {
+protected:
+    int salary;
+public:
+    string department, courseTaught;
+    
+    Professor(string n, int iD, int nm, string em, int s, string d, string ct) : Person(n, iD, nm, em) {
+        salary = s;
+        department = d;
+        courseTaught = ct;
+    }
+    
+    void displayInfo() {
+        cout<<"Faculty-Specific Details"<<endl;
+        Person::displayInfo();
+        cout<<"Salary: "<<salary<<endl<<"Department: "<<department<<endl<<"Course Taught: "<<courseTaught<<endl;
+    }
+};
+
+class Staff : public Person {
+protected:
+    int salary;
+public:
+    string department, position;
+    
+    Staff(string n, int iD, int nm, string em, int s, string d, string p) : Person(n, iD, nm, em) {
+        salary = s;
+        department = d;
+        position = p;
+    }
+    
+    void displayInfo() {
+        cout<<"Administrative Role"<<endl;
+        Person::displayInfo();
+        cout<<"Salary: "<<salary<<endl<<"Position: "<<position<<endl<<"Department: "<<department<<endl;
+    }
+};
+
+class Course {
+public:
+    string name, instructor;
+    int id, credits, schedule;
+    
+    Course(string n, int iD, int c, string ins, int sch) {
+        name = n;
+        id = iD;
+        credits = c;
+        instructor = ins;
+        schedule = sch;
+    }
+    
+    void registerStudent(Student &student) {
+        for (int i = 0; i < 6; i++) {
+            if (student.coursesEnrolled[i].empty()) {
+                student.coursesEnrolled[i] = name;
+                break;
+            }
+        }
+    }
+    
+    float calculateGrades(Student &student) {
+        return student.GPA * credits;
+    }
+};
+
+int main() {
+    string courses[] = {"OOp", "EW", "DLD", "MVC", "ICP", "CCE"};
+    Student s("Me", 1234, 987654321, "me@nu.edu.pk", courses, 3.3, 2024);
+    s.displayInfo();
+    
+    Course c("ML", 101, 3, "Dr.Unknown", 9);
+    c.registerStudent(s);
+    
+    cout << "Updated Student Info after Course Registration:" << endl;
+    s.displayInfo();
+    
+    return 0;
+}
+
+TASK 5:
+#include <iostream>
+using namespace std;
+
+class Media{
+	public:
+		string title, publisher;
+		int publicationDate, uniqueId;
+		
+	Media(string t, int pd, int u, string p){
+		title = t;
+		publicationDate = pd; //DDMMYY
+		uniqueId = u;
+		publisher = p;
+	}
+	
+	virtual void displayInfo() {
+		cout<<"Title: "<<title<<endl<<"Publication Date: "<<publicationDate<<endl<<"Unique ID: "<<uniqueId<<endl<<"Publisher: "<<publisher<<endl;
+	}
+	
+	void checkout() {
+		cout<<"Process Lending "<<endl;
+	}
+	
+	void returnItem() {
+		cout<<"Item Returned"<<endl;
+	}
+};
+
+class Book : public Media{
+	public:
+		string author;
+		int ISBN,numOfPages;
+		
+	Book(string a, int isbn, int nop, string t, int pd, int u, string p) : Media(t,pd,u,p){
+		author = a;
+		ISBN = isbn;
+		numOfPages= nop;
+	}
+	
+	void displayInfo() {
+	    cout<<"\n\n------->BOOK DISPLAY<-------"<<endl;
+		cout<<"Title: "<<title<<endl<<"Publication Date: "<<publicationDate<<endl<<"Unique ID: "<<uniqueId<<endl<<"Publisher: "<<publisher<<endl<<"Author: "<<author<<endl<<"ISBN: "<<ISBN<<endl<<"Number of Pages: "<<numOfPages<<endl;
+	}
+};
+
+class DVD : public Media{
+	public:
+		string director;
+		double duration, rating;
+		
+	DVD(string d, double du, double r, string t, int pd, int u, string p) : Media(t,pd,u,p) {
+		director = d;
+		duration = du;
+		rating = r;
+	}
+	
+	void displayInfo() {
+		cout<<"\n\n------->DVD DISPLAY<-------"<<endl;
+		cout<<"Title: "<<title<<endl<<"Publication Date: "<<publicationDate<<endl<<"Unique ID: "<<uniqueId<<endl<<"Publisher: "<<publisher<<endl<<"Director: "<<director<<endl<<"Duration: "<<duration<<endl<<"Rating: "<<rating<<endl;
+	}
+};
+
+class CD : public Media {
+	public:
+		string artist, genre;
+		double numOfTracks;
+		
+	CD(string ar, double nOt, string g, string t, int pd, int u, string p) : Media(t,pd,u,p) {
+		artist = ar;
+		numOfTracks = nOt;
+		genre = g;
+	}
+	
+	void displayInfo() {
+		cout<<"\n\n------->CD DISPLAY<-------"<<endl;
+		cout<<"Title: "<<title<<endl<<"Publication Date: "<<publicationDate<<endl<<"Unique ID: "<<uniqueId<<endl<<"Publisher: "<<publisher<<endl<<"Artist: "<<artist<<endl<<"Genre: "<<genre<<endl<<"Num Of Tracks: "<<numOfTracks<<endl;
+	}
+};
+
+class Magazine : public Media {
+    public:
+    	int issueNumber;
+    	string genre,language;
+    	
+    Magazine(int in, string g, string l, string t, int pd, int u, string p) : Media(t,pd,u,p) {
+		issueNumber = in;
+		genre = g;
+		language = l;
+	}
+	
+	void displayInfo() {
+		cout<<"\n\n------->MAGAZINE DISPLAY<-------"<<endl;
+		cout<<"Title: "<<title<<endl<<"Publication Date: "<<publicationDate<<endl<<"Unique ID: "<<uniqueId<<endl<<"Publisher: "<<publisher<<endl<<"Issue Number: "<<issueNumber<<endl<<"Genre: "<<genre<<endl<<"Language: "<<language<<endl;
+	}
+};
+
+int main() {
+	Media* m[] = {
+	new Book("MY LIFE",00007,1700,"STUPIDITY", 12/12/2007, 0010,"ME"),
+	new DVD("TREE",2, 5,"POTATO KICKED THE BRINJAL", 000123, 1900, "POEM"),
+	new CD("SEVENTEEN", 114, "K-POP", "MAESTRO",043024, 17, "WOOZI"),
+	new Magazine(120, "Probably Something", "Engliish", "WATCH", 032425, 0000, "ME")
+	};
+	
+	for(int i=0; i<4; i++){
+		m[i]->displayInfo();
+	}	
+	return 0;
+}
