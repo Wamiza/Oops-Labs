@@ -8,39 +8,56 @@ protected:
     float balance;
     string accountholdername;
     string accountype;
+    static string transactions[10];
+    static int transactionIndex;
+    
 public:
     Account(int accnumb,float b,string name,string type): accountnumber(accnumb),balance(b),accountholdername(name),accountype(type){}
 
     void depositAmount(double amount){ 
         balance+=amount;
+        transactions[transactionIndex++ % 10] = "Deposited: $" + to_string(amount);
         cout<<"Deposited: "<<amount<<endl<<"New Balance: "<<balance<<endl;
     }
+
     virtual void withdraw(double amount){
         if(balance>amount){
-            balance=balance-amount;
+            balance -= amount;
+            transactions[transactionIndex++ % 10] = "Withdrawn: $" + to_string(amount);
             cout<<"Withdrawn: "<<amount<<endl<<"New Balance: "<<balance<<endl;
         } 
-		else {
+        else {
             cout<<"Insufficient Balance"<<endl; 
-			}
+        }
     }
+    
     virtual void calculateinterest(){
-        int interest;
+        int interest = 0;
         if(balance > 100 ){ 
             interest=balance*0.15;
         } 
-		else if (balance > 500 ){
+        else if (balance > 500 ){
             interest=balance*0.3;
         } 
-		else if(balance > 1000){
+        else if(balance > 1000){
             interest=balance*0.5;
         }
     }
     
     void getaccountinfo(){
-        cout<<"Account Number: "<<accountnumber<<endl<<"Acount Holder Name: "<<accountholdername<<endl<<"Balance: "<<balance<<endl<<"Account Type: "<<accountype<<endl;
+        cout<<"Account Number: "<<accountnumber<<endl<<"Account Holder Name: "<<accountholdername<<endl<<"Balance: "<<balance<<endl<<"Account Type: "<<accountype<<endl;
+    }
+
+    void PrintStatement() {
+        cout << "\nTransaction History:" << endl;
+        for (int i = 0; i < transactionIndex && i < 10; i++) {
+            cout << transactions[i] << endl;
+        }
     }
 };
+
+string Account::transactions[10];
+int Account::transactionIndex = 0;
 
 class Savingsaccount:public Account{
 protected:
@@ -52,6 +69,7 @@ public:
     void calculateInterest(){
         double interest = balance * interestrate;
         balance += interest;
+        transactions[transactionIndex++ % 10] = "Interest Added: $" + to_string(interest);
         cout<<"Interest Added: "<<interest<<endl<<"New Balance: "<<balance<<endl;
     }
 
@@ -59,7 +77,7 @@ public:
         if ((balance - amount) < minimumbalance) {
             cout<<"Withdrawal denied! Balance cannot go below minimum balance."<<endl;
         } 
-		else {
+        else {
             Account::withdraw(amount);
         }
     }
@@ -73,23 +91,24 @@ public:
     FixedDepasitAccount(int accnumb,float b,string name,string type,int mdate,float fir): Account(accnumb,b,name,type),maturitydate(mdate),fixedinterestrate(fir) {}
     void calculateinterest(){
         double interest = balance * fixedinterestrate;
+        transactions[transactionIndex++ % 10] = "Fixed Deposit Interest: $" + to_string(interest);
         cout<<"Fixed Deposit Interest: "<<interest<<endl<<"Maturity Date: "<<maturitydate<<endl;
     }
  
     void withdraw(double amount){
         if(maturitydate>10){
             if(balance>amount && amount < 1000){
-                balance=balance-amount;
+                balance -= amount;
+                transactions[transactionIndex++ % 10] = "Withdrawn (Fixed): $" + to_string(amount);
             } 
-			else {
+            else {
                  cout<<"Insufficient Balance"<<endl;
-				 }
+            }
         } 
-		else {
+        else {
             cout<<"Withdrawal not allowed before maturity date!"<<endl;
         }
     }
-
 };
 
 class CheckingAccount:public Account{
@@ -103,39 +122,42 @@ public:
         if(amount > balance) {
             cout<<"Insufficient funds! Overdraft not allowed."<<endl;
         } 
-		else if(amount > 1000) {
+        else if(amount > 1000) {
             cout<<"Withdrawal limit exceeded! Maximum withdrawal is 1000."<<endl;
         } 
-		else {
+        else {
             balance -= amount;
+            transactions[transactionIndex++ % 10] = "Withdrawn (Checking): $" + to_string(amount);
             cout<<"Withdrawn: "<<amount<<endl<<"New Balance: "<<balance<<endl;
         }
     }
 };
 
 int main(){
-    int choice;
     cout<<"----------------->BANKING SYSTEM<--------------"<<endl;
-    cout<<"For Savings Account:"<<endl;
-    Savingsaccount S(10001,20000,"Wamiza","Savings Account",0.13,100);
+    
+    Savingsaccount S(10001,20000,"Wamiza Noman","Savings Account",0.13,100);
     S.getaccountinfo();
-    S.depositAmount(1000);
-    S.withdraw(200);
+    S.depositAmount(15100);
+    S.withdraw(500);
     S.calculateInterest();
+    S.PrintStatement();
     
     cout<<"\nFor Fixed Deposit Account:"<<endl;
-    FixedDepasitAccount F(10002,30000,"ABC","Fixed Deposit Account",5,0.15);
+    FixedDepasitAccount F(10002,30000,"MMMM","Fixed Deposit Account",5,0.15);
     F.getaccountinfo();
-    F.depositAmount(10000);
-    F.withdraw(100);
+    F.depositAmount(9000);
+    F.withdraw(700);
     F.calculateinterest();
+    F.PrintStatement();
     
     cout<<"\nFor Checking Account:"<<endl;
-    CheckingAccount C(10003,1000,"XYZ","Checking Account");
+    CheckingAccount C(10003,1000,"nnnnnn","Checking Account");
     C.getaccountinfo();
     C.depositAmount(1000);
-    C.withdraw(200000);
+    C.withdraw(8700);
     C.calculateinterest();
+    C.PrintStatement();
     
     return 0;
 }
