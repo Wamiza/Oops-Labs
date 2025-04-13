@@ -1,0 +1,272 @@
+Task 1:
+#include <iostream>
+
+using namespace std;
+
+class Time;
+
+class Speed {
+    int kmph;
+public:
+    Speed(int s) {
+        kmph = s;
+    }
+    friend float calculateDistance(Speed, Time);
+};
+
+class Time {
+    int hours;
+public:
+    Time(int t) {
+        hours = t;
+    }
+    friend float calculateDistance(Speed, Time);
+};
+
+float calculateDistance(Speed s, Time t) {
+    return s.kmph * t.hours;
+}
+
+int main() {
+    int s, t;
+    cout << "Enter speed in km/h: ";
+    cin >> s;
+    cout << "Enter time in hours: ";
+    cin >> t;
+
+    Speed speedObj(s);
+    Time timeObj(t);
+
+    float distance = calculateDistance(speedObj, timeObj);
+
+    cout << "Distance traveled: " << distance << " km" << endl;
+
+    return 0;
+}
+
+Task 2:
+#include <iostream>
+
+using namespace std;
+
+class BallsFaced;
+
+class Runs {
+    int totalRuns;
+public:
+    Runs(int r) {
+        totalRuns = r;
+    }
+    friend float calculateStrikeRate(Runs, BallsFaced);
+};
+
+class BallsFaced {
+    int balls;
+public:
+    BallsFaced(int b) {
+        balls = b;
+    }
+    friend float calculateStrikeRate(Runs, BallsFaced);
+};
+
+float calculateStrikeRate(Runs r, BallsFaced b) {
+    if (b.balls == 0) return 0;
+    return (r.totalRuns / (float)b.balls) * 100;
+}
+
+int main() {
+    int runs, balls;
+    cout << "Enter runs scored: ";
+    cin >> runs;
+    cout << "Enter balls faced: ";
+    cin >> balls;
+
+    Runs runsObj(runs);
+    BallsFaced ballsObj(balls);
+
+    float rate = calculateStrikeRate(runsObj, ballsObj);
+
+    cout << "Strike Rate: " << rate << endl;
+
+    return 0;
+}
+
+Task 3:
+#include <iostream>
+
+using namespace std;
+
+class ComplexNumber {
+    int real, imag;
+public:
+    ComplexNumber(int r = 0, int i = 0) {
+        real = r;
+        imag = i;
+    }
+
+    ComplexNumber operator+(const ComplexNumber& other) {
+        return ComplexNumber(real + other.real, imag + other.imag);
+    }
+
+    ComplexNumber operator-(const ComplexNumber& other) {
+        return ComplexNumber(real - other.real, imag - other.imag);
+    }
+
+    ComplexNumber operator*(const ComplexNumber& other) {
+        int r = real * other.real - imag * other.imag;
+        int i = real * other.imag + imag * other.real;
+        return ComplexNumber(r, i);
+    }
+
+    bool operator==(const ComplexNumber& other) {
+        return (real == other.real && imag == other.imag);
+    }
+
+    void display() {
+        if (imag < 0)
+            cout << real << " - " << -imag << "i";
+        else
+            cout << real << " + " << imag << "i";
+    }
+};
+
+int main() {
+    ComplexNumber a(2, 3);
+    ComplexNumber b(1, 4);
+
+    ComplexNumber sum = a + b;
+    ComplexNumber diff = a - b;
+    ComplexNumber prod = a * b;
+
+    cout << "a = "; a.display(); cout << endl;
+    cout << "b = "; b.display(); cout << endl;
+
+    cout << "Sum = "; sum.display(); cout << endl;
+    cout << "Difference = "; diff.display(); cout << endl;
+    cout << "Product = "; prod.display(); cout << endl;
+
+    if (a == b)
+        cout << "a and b are equal" << endl;
+    else
+        cout << "a and b are not equal" << endl;
+
+    return 0;
+}
+
+Task 4:
+#include <iostream>
+
+using namespace std;
+
+class TrafficSystem {
+    int carCount;
+public:
+    TrafficSystem(int count = 0) {
+        carCount = count;
+    }
+
+    TrafficSystem operator+(const TrafficSystem& other) {
+        return TrafficSystem(carCount + other.carCount);
+    }
+
+    TrafficSystem operator-(const TrafficSystem& other) {
+        return TrafficSystem(carCount - other.carCount);
+    }
+
+    TrafficSystem operator*(const TrafficSystem& other) {
+        return TrafficSystem(carCount * other.carCount);
+    }
+
+    bool operator==(const TrafficSystem& other) {
+        return carCount == other.carCount;
+    }
+
+    void display() {
+        cout << "Cars in system: " << carCount << endl;
+    }
+};
+
+int main() {
+    TrafficSystem roadA(50), roadB(20), roadC(15);
+
+    TrafficSystem total = roadA + roadB;
+    total.display();
+
+    TrafficSystem eased = total - roadC;
+    eased.display();
+
+    TrafficSystem delay(2), doubled = delay * TrafficSystem(5);
+    doubled.display();
+
+    TrafficSystem jam1(100), jam2(100);
+    if (jam1 == jam2)
+        cout << "Gridlock confirmed on both roads." << endl;
+    else
+        cout << "Traffic conditions differ." << endl;
+
+    return 0;
+}
+
+Task 5:
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Student;
+
+class Teacher {
+public:
+    void updateGrade(Student& s, int index, int newGrade);
+};
+
+class Student {
+    string name;
+    int grades[3];
+public:
+    Student(string n, int g1, int g2, int g3) {
+        name = n;
+        grades[0] = g1;
+        grades[1] = g2;
+        grades[2] = g3;
+    }
+
+    void displayGrades() {
+        cout << name << "'s grades: ";
+        for (int i = 0; i < 3; i++)
+            cout << grades[i] << " ";
+        cout << endl;
+    }
+
+    friend float calculateAverageGrade(Student);
+    friend class Teacher;
+};
+
+void Teacher::updateGrade(Student& s, int index, int newGrade) {
+    if (index >= 0 && index < 3) {
+        s.grades[index] = newGrade;
+    }
+}
+
+float calculateAverageGrade(Student s) {
+    int sum = 0;
+    for (int i = 0; i < 3; i++)
+        sum += s.grades[i];
+    return sum / 3.0f;
+}
+
+int main() {
+    Student st("Ali", 75, 82, 90);
+    Teacher t;
+
+    st.displayGrades();
+    cout << "Average: " << calculateAverageGrade(st) << endl;
+
+    cout << "\nTeacher decides to update the second grade...\n";
+    t.updateGrade(st, 1, 95);
+
+    st.displayGrades();
+    cout << "New Average: " << calculateAverageGrade(st) << endl;
+
+    return 0;
+}
