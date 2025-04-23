@@ -130,3 +130,195 @@ int main() {
 }
 
 Task 3:
+#ifndef BOOK_H
+#define BOOK_H
+
+#include <string>
+using namespace std;
+
+class Book {
+private:
+    string title;
+    string author;
+    string ISBN;
+
+public:
+	
+    Book(const string& t, const string& a, const string& i);
+
+    string getTitle() const;
+    string getAuthor() const;
+    string getISBN() const;
+};
+
+#include "Book.h"
+using namespace std;
+
+Book::Book(const string& t, const string& a, const string& i)
+    : title(t), author(a), ISBN(i) {}
+
+string Book::getTitle() const {
+    return title;
+}
+
+string Book::getAuthor() const {
+    return author;
+}
+
+string Book::getISBN() const {
+    return ISBN;
+}
+#include <iostream>
+#include "Book.h"
+using namespace std;
+
+int main() {
+    Book myBook("1984", "George Orwell", "9780451524935");
+
+    cout << "Book Details:\n";
+    cout << "Title: " << myBook.getTitle() << "\n";
+    cout << "Author: " << myBook.getAuthor() << "\n";
+    cout << "ISBN: " << myBook.getISBN() << "\n";
+
+    return 0;
+}
+
+Task 4:
+#ifndef PAYMENT_METHOD_H
+#define PAYMENT_METHOD_H
+using namespace std;
+
+class PaymentMethod {
+public:
+    virtual void processPayment(double amount) = 0; // Pure virtual
+    virtual ~PaymentMethod() {}
+};
+
+#endif
+#ifndef CREDIT_CARD_H
+#define CREDIT_CARD_H
+
+#include "PaymentMethod.h"
+#include <string>
+using namespace std;
+
+class CreditCard : public PaymentMethod {
+private:
+    string cardNumber;
+
+public:
+    CreditCard(const string& number);
+    void processPayment(double amount) override;
+};
+
+#endif
+#include "CreditCard.h"
+#include <iostream>
+using namespace std;
+
+CreditCard::CreditCard(const string& number) : cardNumber(number) {}
+
+void CreditCard::processPayment(double amount) {
+    cout << "Processing credit card payment of $" << amount
+              << " using card number " << cardNumber << ".\n";
+}
+#ifndef DIGITAL_WALLET_H
+#define DIGITAL_WALLET_H
+
+#include "PaymentMethod.h"
+using namespace std;
+
+class DigitalWallet : public PaymentMethod {
+private:
+    double balance;
+
+public:
+    DigitalWallet(double initialBalance);
+    void processPayment(double amount) override;
+};
+
+#endif
+#include "DigitalWallet.h"
+#include <iostream>
+using namespace std;
+
+DigitalWallet::DigitalWallet(double initialBalance) : balance(initialBalance) {}
+
+void DigitalWallet::processPayment(double amount) {
+    if (amount <= balance) {
+        balance -= amount;
+        cout << "Payment of $" << amount << " successful. Remaining wallet balance: $" << balance << "\n";
+    }
+else {
+        cout << "Payment failed. Insufficient wallet balance.\n";
+    }
+}
+#include <iostream>
+#include "CreditCard.h"
+#include "DigitalWallet.h"
+using namespace std;
+
+int main() {
+    CreditCard myCard("1234-5678-9012-3456");
+    DigitalWallet myWallet(50.0);
+
+    cout << "\n-- Credit Card Payment --\n";
+    myCard.processPayment(30.0);
+
+    cout << "\n-- Digital Wallet Payment --\n";
+    myWallet.processPayment(20.0);
+    myWallet.processPayment(40.0); 
+
+    return 0;
+}
+
+Task 5:
+#include <iostream>
+#include <cmath> 
+using namespace std;
+
+class Activity {
+public:
+    virtual double calculateCaloriesBurned() const = 0;
+    virtual ~Activity() {}
+};
+
+class Running : public Activity {
+private:
+    double distance; // in kilometers
+    double time;     // in minute
+
+public:
+    Running(double d, double t) : distance(d), time(t) {}
+
+    double calculateCaloriesBurned() const override {
+        // Simple formula: calories = MET * weight(kg) * time(hr)
+        // Assume MET = 9.8 for running, weight = 70kg
+        double hours = time / 60.0;
+        return 9.8 * 70 * hours;
+    }
+};
+
+class Cycling : public Activity {
+private:
+    double speed; 
+    double time;  
+
+public:
+    Cycling(double s, double t) : speed(s), time(t) {}
+
+    double calculateCaloriesBurned() const override {
+        double MET = (speed < 16) ? 4.0 : (speed < 20) ? 6.8 : 8.0;
+        return MET * 70 * time; // Assume weight = 70kg
+    }
+};
+
+int main() {
+    Running run(5.0, 30.0);       
+    Cycling cycle(18.0, 1.0);     
+
+    cout << "Calories burned during running: " << run.calculateCaloriesBurned() << " kcal\n";
+    cout << "Calories burned during cycling: " << cycle.calculateCaloriesBurned() << " kcal\n";
+
+    return 0;
+}
