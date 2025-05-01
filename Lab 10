@@ -1,0 +1,419 @@
+Task:
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+int main() {
+	string name, message;
+	
+	cout<<"Enter Name: "<<endl;
+	getline(cin, name);
+	
+	cout<<"Enter Message: "<<endl;
+	getline(cin, message);
+	
+	ofstream outFile("greeting.txt");
+	if(outFile.is_open()){
+		cout<<"Dear "<<" "<<name<<endl;
+		cout<<""<<message<<endl;
+		cout<<"Best Regards"<<endl;
+	
+	outFile.close();
+	cout<<"greeting.txt has sucessfully Created"<<endl;
+    }
+    else{
+    	cerr<<"Error"<<endl;
+	}
+	
+	return 0;
+}
+
+Task 2:
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+int main() {
+	string entries;
+	
+	ofstream diary("diary.txt", ios::app);
+	if(diary.is_open()){
+		cout<<"start writing your message and write exit on next line when you want to end"<<endl;
+	while(true){
+    	getline(cin, entries);
+    	
+    	if(entries == "exit"){
+    	break;
+		}
+	}
+		diary<<entries<<endl;
+		
+		diary.close();
+		cout<<"diary entries has sucessfully saved"<<endl;
+	}
+	else{
+		cerr<<"Error"<<endl;
+	}
+	
+	return 0;
+}
+
+Task 3:
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+int main() {
+	string name, email;
+	char choice;
+	
+	do{
+	cout<<"Enter Name: "<<endl;
+	getline(cin, name);
+	
+	cout<<"Enter email: "<<endl;
+	getline(cin, email);
+	
+	ofstream signup("signup.txt", ios::app);
+	if(signup.is_open()){
+		cout<<"Name: "<<" "<<name <<", Email: "<<email<<endl;
+	
+	signup.close();
+	cout<<"Data has sucessfully stored"<<endl;
+    }
+    else{
+    	cerr<<"Error"<<endl;
+	}
+	
+	cout<<"Do you want to add another data? (y/n): "<<endl;
+	cin>>choice;
+	cin.ignore();
+	
+} 
+while(choice == 'y' || choice == 'Y');
+	
+	return 0;
+}
+
+Task 4:
+#include <iostream>
+#include <fstream>
+#include <ctime>
+
+using namespace std;
+
+int main() {
+    time_t now = time(0);
+    char* currentTime = ctime(&now);
+
+    ofstream logFile("system_log.txt", ios::app);
+
+    if(logFile.is_open()) {
+        logFile<<"System started at: "<<currentTime;
+        logFile.close();
+        cout<<"System log updated successfully."<<endl;
+    } 
+	else{
+        cerr<<"Error: Unable to open system_log.txt"<<endl;
+    }
+
+    return 0;
+}
+
+Task 5:
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string line;
+
+    ifstream file("story.txt");
+
+    if (file.is_open()) {
+        while (getline(file, line)) {
+            istringstream iss(line);
+            string word;
+            while (iss >> word) {
+                cout << word << endl;
+            }
+        }
+        file.close();
+    } 
+	else {
+        cerr << "Error." << endl;
+    }
+
+    return 0;
+}
+
+Task 6:
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+    ifstream file("secret.txt");  
+    int count = 0; 
+    if (file.is_open()) {
+        char ch;  
+        while (file.get(ch)) {
+            if (ch>='A' && ch<='Z') {
+                count++;
+            }
+        }
+
+        file.close();  
+    } 
+	else {
+        cout<<"Error"<<endl; 
+    }
+
+    cout<<"Count of uppercase letters (signals): "<<count<< endl; 
+    return 0;
+}
+
+Task 7:
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+struct Student {
+    char name[50];
+    int id;
+    float gpa;
+};
+
+int main() {
+    Student students[5];
+    ofstream outFile("students.dat", ios::binary);
+
+    for (int i = 0; i < 5; i++) {
+        cout<<"Enter name of student "<<(i + 1)<<": ";
+        cin>>students[i].name;
+        
+        cout<<"Enter student "<<(i + 1)<<" ID: ";
+        cin>>students[i].id;
+        
+        cout<<"Enter GPA of student "<<(i + 1)<<": ";
+        cin>>students[i].gpa;
+    }
+
+    outFile.write((char*)students, sizeof(students));
+    outFile.close();
+
+    ifstream inFile("students.dat", ios::binary);
+
+    if (inFile.is_open()) {
+        inFile.read((char*)students, sizeof(students));
+        
+        cout<<"\nStudent Data: "<<endl;;
+        for (int i = 0; i < 5; i++) {
+            cout<<"Student "<<(i + 1)<<" Name: "<<students[i].name<<endl;
+            cout<<"ID: "<<students[i].id<<", GPA: "<<students[i].gpa<<endl;
+        }
+        inFile.close();
+    } 
+	else {
+        cout<<"Error opening file!"<<endl;
+    }
+
+    return 0;
+}
+
+Task 8:
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    ifstream file("article.txt");
+
+    if (!file) {
+        cout<<"Error"<<endl;
+        return 1;
+    }
+
+    file.seekg(0, ios::end);  
+    int fileSize = file.tellg();  
+    int middle = fileSize / 2;  
+
+    file.seekg(middle, ios::beg);  
+
+    string line;
+    int lineCount = 0;
+
+    while (getline(file, line) && lineCount < 10) {
+        cout << line << endl;
+        lineCount++;
+    }
+
+    file.close();
+    return 0;
+}
+
+Task 9:
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    fstream file("draft.txt", ios::in | ios::out);
+
+    if (!file) {
+        cout<<"Error "<<endl;
+        return 1;
+    }
+
+    string word;
+    long pos;
+    bool found = false;
+
+    while (file >> word) {
+        pos = file.tellg();  
+        
+        if (word == "teh" && !found) {
+            file.seekp(pos - word.length(), ios::beg);  
+            file<<"the";  
+            found = true;
+            break;  
+        }
+    }
+
+    file.close();
+    return 0;
+}
+
+Task 10:
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    ofstream file("backup_log.txt", ios::app);
+
+    if (!file) {
+        cout<<"Error "<<endl;
+        return 1;
+    }
+
+    string logMessage;
+    
+    while (true) {
+        cout<<"Enter log message (or type 'exit' to stop):"<<endl;
+        getline(cin, logMessage);
+
+        if (logMessage == "exit") {
+            break;
+        }
+
+        file<<logMessage<<endl;
+
+        file.seekp(0, ios::end);
+        cout<<"Current file size: "<<file.tellp()<<" bytes"<<endl;
+    }
+
+    file.close();
+    return 0;
+}
+
+Task 11:
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+int main() {
+    ifstream inFile("article.txt");
+    ofstream outFile("report.txt");
+
+    if (!inFile || !outFile) {
+        cout<<"Error"<<endl;
+        return 1;
+    }
+
+    int letters = 0;
+    int words = 0;
+    int lines = 0;
+    int dots = 0;
+
+    string line;
+
+    while (getline(inFile, line)) {
+        lines++;
+
+        for (int i = 0; i < line.length(); i++) {
+            char ch = line[i];
+            letters++;
+
+            if (ispunct(ch)) {
+                dots++;
+            }
+
+            if ((i == 0 && !isspace(ch)) ||
+                (i > 0 && isspace(line[i - 1]) && !isspace(ch))) {
+                words++;
+            }
+        }
+
+        letters++;
+    }
+
+    outFile<<"My File Report"<<endl;
+    outFile<<"----------------"<<endl;
+    outFile<<"Letters: "<<letters<<endl;
+    outFile<<"Words: "<<words<<endl;
+    outFile<<"Lines: "<<lines<<endl;
+    outFile<<"Punctuation: "<<dots<<endl;
+
+    inFile.close();
+    outFile.close();
+
+    return 0;
+}
+
+Task 12:
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+    ifstream file("myfile.txt");
+
+    if (!file) {
+        cout<<"Error "<<endl;
+        return 1;
+    }
+
+    int where;
+    cout<<"Where do you want to look? (byte number): ";
+    cin>>where;
+
+    cout<<"Pointer is at: "<<file.tellg()<<endl;
+
+    file.seekg(where, ios::beg);
+
+    cout<<"Pointer moved to: "<<file.tellg()<<endl;
+
+    char ch;
+    int count = 0;
+
+    cout<<"Next 100 letters:"<<endl;
+    while (file.get(ch) && count<100) {
+        cout << ch;
+        count++;
+    }
+
+    file.close();
+    return 0;
+}
