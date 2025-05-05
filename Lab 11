@@ -1,0 +1,312 @@
+Task 1:
+#include <iostream>
+using namespace std;
+
+template <typename T>
+void swapIntegers(T value1, T value2){
+	T temp = value1;
+	value1 = value2;
+	value2 = temp;
+}
+
+int main(){
+	int a = 5, b = 10;
+	float x = 3.5, y = 7.8;
+	char ch1 = 'A', ch2 = 'Z';
+	
+	cout<<"Before Swapp: "<<" a: "<<a<<", b: "<<b<<endl;
+	swapIntegers(a,b);
+	cout<<"After Swapp: "<<" a: "<<a<<", b: "<<b<<endl;
+    
+	cout<<"Before Swapp: "<<" x: "<<x<<", y: "<<y<<endl;
+	swapIntegers(x,y);
+	cout<<"After Swapp: "<<" x: "<<x<<", y: "<<y<<endl;
+	
+	cout<<"Before Swapp: "<<" ch1: "<<ch1<<", ch2: "<<ch2<<endl;
+	swapIntegers(ch1,ch2);
+	cout<<"After Swapp: "<<" ch1: "<<ch1<<", ch2: "<<ch2<<endl;
+	
+	return 0;
+}
+
+Task 2:
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n, d;
+
+    cout<<"Enter numerator: ";
+    cin>>n;
+
+    cout<<"Enter denominator: ";
+    cin>>d;
+
+    if(d==0) {
+        cout<<"Error: Division by 0 is not allowed"<<endl;
+    }
+	else {
+        cout<<"Result: "<<n/d<<endl;
+    }
+
+    return 0;
+}
+
+Task 3:
+#include <iostream>
+using namespace std;
+
+template <typename T1, typename T2>
+class Pair {
+public:
+    T1 v1;
+    T2 v2;
+
+    Pair(T1 first, T2 second) {
+        v1 = first;
+        v2 = second;
+    }
+
+    void display() {
+        cout<<"Pair: ("<<v1<<", "<<v2<<")"<<endl;
+    }
+};
+
+int main() {
+	
+    Pair<int, string> p1(5, "Hello");
+    p1.display();
+
+    Pair<double, int> p2(3.14, 42);
+    p2.display();
+
+    return 0;
+}
+
+Task 4:
+#include <iostream>
+#include <stdexcept> // for std::runtime_error
+using namespace std;
+
+class InsufficientFundsException : public runtime_error {
+public:
+    InsufficientFundsException() : runtime_error("Insufficient funds to complete withdrawal!") {}
+};
+
+class BankAccount {
+private:
+    int balance;
+
+public:
+    BankAccount(int b) {
+        balance = b;
+    }
+
+    void withdraw(int amount) {
+        if (amount>balance) {
+            throw InsufficientFundsException();
+        } 
+		else {
+            balance -= amount;
+            cout<<"Withdrawal successful! New Balance: $"<<balance<<endl;
+        }
+    }
+
+    int getBalance() {
+        return balance;
+    }
+};
+
+int main() {
+    BankAccount account(500);
+
+    cout<<"Current Balance: $"<<account.getBalance()<<endl;
+    cout<<"Enter withdrawal amount: $";
+    int amount1;
+    cin>>amount1;
+
+    try {
+        account.withdraw(amount1);
+    } 
+	catch (const InsufficientFundsException &e) {
+        cout<<"Error: "<<e.what()<<endl;
+    }
+
+    cout<<"Current Balance: $" << account.getBalance()<<endl;
+    cout<<"Enter withdrawal amount: $";
+    int amount2;
+    cin>>amount2;
+
+    try {
+        account.withdraw(amount2);
+    } 
+	catch (const InsufficientFundsException &e) {
+        cout<<"Error: "<<e.what()<<endl;
+    }
+
+    return 0;
+}
+
+Task 5:
+#include <iostream>
+#include <string>
+using namespace std;
+
+template<typename T>
+T findMax(T arr[], int size){
+	T max = arr[0];
+	for(int i=0; i<size; i++){
+		if(arr[i]>max){
+			max = arr[i];
+		}
+	}
+	return max;
+}
+
+int main(){
+	int array[]={10,20,5,30,25};
+	string array2[]={"Apple","Mango","Banana","Peach"};
+	
+	cout<<"Maximum: "<<findMax(array,5)<<endl;
+	cout<<"Maximum: "<<findMax(array2,4)<<endl;
+	
+	return 0;
+}
+
+Task 6:
+#include <iostream>
+#include <string>
+using namespace std;
+
+class InvalidAgeException {
+public:
+    string what() { 
+	return "Age must be between 1 and 119"; }
+};
+
+class InvalidSalaryException {
+public:
+    string what() { 
+	return "Salary must be positive"; }
+};
+
+class InvalidHeightException {
+public:
+    string what() { 
+	return "Height must be positive"; }
+};
+
+int main() {
+    int age;
+    double salary;
+    double height;
+
+    try {
+        cout<<"Enter age: ";
+        cin>>age;
+        if(age <= 0 || age >= 120) {
+            throw InvalidAgeException();
+        }
+
+        cout<<"Enter salary: ";
+        cin>>salary;
+        if(salary <= 0) {
+            throw InvalidSalaryException();
+        }
+
+        cout<<"Enter height (cm): ";
+        cin>>height;
+        if(height <= 0) {
+            throw InvalidHeightException();
+        }
+
+        cout<<"User profile registered successfully!"<<endl;
+    }
+    
+    catch(InvalidAgeException e) {
+        cout<<"InvalidAgeException caught: "<<e.what()<<endl;
+    }
+    catch(InvalidSalaryException e) {
+        cout<<"InvalidSalaryException caught: "<<e.what()<<endl;
+    }
+    catch(InvalidHeightException e) {
+        cout<<"InvalidHeightException caught: "<<e.what()<<endl;
+    }
+
+    return 0;
+}
+
+Task 7:
+#include <iostream>
+#include <string>
+using namespace std;
+
+class OutOfBoundsException {
+public:
+    string what() const {
+        return "Invalid index access attempted!";
+    }
+};
+
+template<typename T>
+class SmartArray {
+private:
+    T* data;
+    int size;
+
+public:
+    SmartArray(int s) {
+        size = s;
+        data = new T[size];
+    }
+
+    ~SmartArray() {
+        delete[] data;
+    }
+
+    T& operator[](int index) {
+        if(index < 0 || index >= size) {
+            throw OutOfBoundsException();
+        }
+        return data[index];
+    }
+
+    int getSize() const {
+        return size;
+    }
+};
+
+int main() {
+    int size;
+    cout<<"Array size: ";
+    cin>>size;
+
+    SmartArray<int> intArray(size);
+    cout<<"Enter elements: ";
+    for(int i=0; i < size; ++i) {
+        cin>>intArray[i];
+    }
+
+    try {
+        cout<<"Accessing index 2: "<<intArray[2]<<endl;
+        cout<<"Accessing index 5: "<<intArray[5]<<endl;
+    }
+    catch(OutOfBoundsException e) {
+        cout<<"OutOfBoundsException caught: "<<e.what()<<endl;
+    }
+
+    SmartArray<string> strArray(3);
+    strArray[0] = "Apple";
+    strArray[1] = "Banana";
+    strArray[2] = "Mango";
+
+    try {
+        cout<<"Accessing index 1 (string): "<<strArray[1]<<endl;
+        cout<<"Accessing index 3 (string): "<<strArray[3]<<endl;
+    }
+    catch(OutOfBoundsException e) {
+        cout<<"OutOfBoundsException caught: "<<e.what()<<endl;
+    }
+
+    return 0;
+}
